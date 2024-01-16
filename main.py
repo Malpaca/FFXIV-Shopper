@@ -36,15 +36,15 @@ def main(file, datacenter, verbose):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a 'optimized' shopping list given makeplace JSON itemlist")
-    parser.add_argument('--file', '-f', dest='file', required=True, help='Path to json')
-    parser.add_argument('--datacenter', '-dc', dest='dc', required=True, help='Shopper datacenter name')
-    parser.add_argument('--verbose', '-v', dest='v', action='store_true', help='Verbose, display specific listing for each item instead of just average')
+    parser.add_argument('--file', '-f', required=True, help='Path to json')
+    parser.add_argument('--datacenter', '-dc', required=True, help='Shopper datacenter name')
+    parser.add_argument('--verbose', '-v', action='store_true', help='Verbose, display specific listing for each item instead of just average')
     args = parser.parse_args()
 
     try:
         file = args.file
-        datacenter = args.dc
-        verbose = args.v
+        datacenter = args.datacenter
+        verbose = args.verbose
     except ValueError:
         print("args parser error, this should never happen, if it does, congrat!")
         exit()
