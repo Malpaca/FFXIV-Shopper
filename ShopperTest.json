@@ -1,0 +1,174 @@
+{
+	"lightLevel": 1,
+	"houseSize": "Small",
+	"interiorFixture": [
+		{
+			"level": "",
+			"type": "District",
+			"name": "Mist",
+			"itemId": 0,
+			"color": ""
+		},
+		{
+			"level": "Basement",
+			"type": "Wall",
+			"name": "Storm Blue Interior Wall",
+			"itemId": 33248,
+			"color": ""
+		},
+		{
+			"level": "Basement",
+			"type": "Floor",
+			"name": "Glade Flooring",
+			"itemId": 6459,
+			"color": ""
+		},
+		{
+			"level": "Ground Floor",
+			"type": "Light",
+			"name": "Crystal Chandelier",
+			"itemId": 16013,
+			"color": ""
+		},
+		{
+			"level": "Ground Floor",
+			"type": "Floor",
+			"name": "Glade Flooring",
+			"itemId": 6459,
+			"color": ""
+		},
+		{
+			"level": "Ground Floor",
+			"type": "Wall",
+			"name": "Storm Blue Interior Wall",
+			"itemId": 33248,
+			"color": ""
+		},
+		{
+			"level": "Basement",
+			"type": "Light",
+			"name": "Crystal Chandelier",
+			"itemId": 16013,
+			"color": ""
+		}
+	],
+	"exteriorScale": 100,
+	"exteriorFixture": [
+		{
+			"level": "",
+			"type": "Window",
+			"name": "Riviera Arched Window",
+			"itemId": 6401,
+			"color": ""
+		},
+		{
+			"level": "",
+			"type": "Door",
+			"name": "Riviera Wooden Door",
+			"itemId": 6410,
+			"color": "BB9F7000"
+		}
+	],
+	"exteriorFurniture": [],
+	"metaData":
+	{
+		"version": 127
+	},
+	"interiorScale": 100,
+	"interiorFurniture": [
+		{
+			"itemId": 39394,
+			"name": "Alpine Pillar",
+			"transform":
+			{
+				"location": [ 363.68687115558276, 240.94125414343742, 0 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7093,
+			"name": "Carbuncle Chronometer",
+			"transform":
+			{
+				"location": [ -298.36686110908073, 599.32670095739195, 361.14609729357522 ],
+				"rotation": [ 0, -0, 0.99999999999999989, 6.123233995736766e-17 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7072,
+			"name": "Cooking Stove",
+			"transform":
+			{
+				"location": [ 244.4640165984554, -132.49448952590581, 0 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7978,
+			"name": "Corner Counter",
+			"transform":
+			{
+				"location": [ 291.6009088387658, 115.76176617889405, 0 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7978,
+			"name": "Corner Counter",
+			"transform":
+			{
+				"location": [ -130.99876372029652, -139.460218960617, 1.0543140969407574 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7072,
+			"name": "Cooking Stove",
+			"transform":
+			{
+				"location": [ -71.557670842099228, -132.49795769983459, 0 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		},
+		{
+			"itemId": 7978,
+			"name": "Corner Counter",
+			"transform":
+			{
+				"location": [ -131.00629920811568, 115.76176617889405, 0 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
+		}
+	],
+	"properties":
+	{
+	}
+}
