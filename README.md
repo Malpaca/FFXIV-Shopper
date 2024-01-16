@@ -1,4 +1,5 @@
 # FFXIV-Shopper
+```
 usage: main.py [-h] --file FILE --datacenter DATACENTER [--verbose]
 
 Generate a 'optimized' shopping list given makeplace JSON itemlist
@@ -9,6 +10,12 @@ options:
   --datacenter DATACENTER, -dc DATACENTER
                         Shopper datacenter name
   --verbose, -v         Verbose, display specific listing for each item instead of just average
+```
+To have a taste with the example json file, run
+```
+python main.py -f ShopperTest.json -dc primal -v
+```
+Which will print out [this example output](#example-output)
 
 ## TODO
 Actually implement the optimization step. Currently it only accept makeplace JSON file since all item have 1 count, and we can just grab the top N item on the marketboard. But stackable item it will look through top M marketboard listing and choose a combination that buys required amount of item with least amount of gil spent (e.g., crystals usually sell in stack of 5000, but if you only need 500 then its worth buying a listing with more price per item but less total price)
