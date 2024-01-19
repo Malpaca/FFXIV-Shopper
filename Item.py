@@ -6,8 +6,8 @@ class Item:
         self.alteration = 0
         self.not_on_market = False
 
-    def add_listing(self, listing):
-        if listing["worldName"] in self.world_prices:
-            self.world_prices[listing["worldName"]].append({"price per unit":listing["pricePerUnit"], "quantity":listing["quantity"]})
+    def add_listing(self, worldname, priceperunit, quantity):
+        if worldname in self.world_prices:
+            self.world_prices[worldname].append({"price per unit":priceperunit, "quantity":quantity})
         else:
-            self.world_prices[listing["worldName"]]=[{"price per unit":listing["pricePerUnit"], "quantity":listing["quantity"]}]
+            self.world_prices[worldname]=[{"price per unit":priceperunit, "quantity":quantity}]

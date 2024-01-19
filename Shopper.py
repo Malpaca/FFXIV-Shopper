@@ -62,7 +62,7 @@ class Shopper:
         # will create a search that minize gil spent to buy at least [quantity] items later
         if not self.items[itemid].not_on_market:
             for listing in prices["items"][str(itemid)]["listings"][:self.items[itemid].quantity]:
-                self.items[itemid].add_listing(listing)
+                self.items[itemid].add_listing(listing["worldName"], listing["pricePerUnit"], listing["quantity"])
 
 
 
