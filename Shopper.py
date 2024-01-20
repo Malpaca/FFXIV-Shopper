@@ -1,4 +1,7 @@
 import requests
+import json
+import time
+import numpy as np
 from Item import Item
 from World import World
 from datetime import datetime
@@ -19,9 +22,10 @@ class Shopper:
             if furniture["itemId"] not in self.items:
                 self.items[furniture["itemId"]] = Item(furniture["name"])
             self.items[furniture["itemId"]].quantity += 1
+        print(f"Total {len(self.items)} items received from JSON file")
 
     def make_shopping_list(self):
-        self.get_prices()
+        self.fetch_and_optimize()
         self.formate_worlds()
 
         self.print_header()
@@ -33,37 +37,53 @@ class Shopper:
 
 
 
-    def get_prices(self):
+    def fetch_and_optimize(self):
         # Assume total itemlist is smaller than 100
         # will add a check that breaks up itemIds if its larger than 100 unique items
-        largest_quantity = max([item.quantity for item in self.items.values()])
-        itemIds = ','.join(str(x) for x in self.items.keys())
-        print("Fetching Universalis data")
-        try:
-            universalis_query = 'https://universalis.app/api/v2/{worldDcRegion}/{itemIds}?listings={listings}&entries=0'
-            price_request = requests.get(universalis_query.format(
-                worldDcRegion=self.datacenter, itemIds=itemIds, listings=largest_quantity))
-            prices = price_request.json()
-        except:
-            print('Error when requesting Universalis API, try later and check API status')
+        print("Fetching item sells data and optimizing")
+        for itemid in self.progressbar(self.items.keys()):
+            listing_count = min(self.items[itemid].quantity+10, 100)
+            try:
+                universalis_query = 'https://universalis.app/api/v2/{worldDcRegion}/{itemIds}?listings={listings}&entries=0'
+                price_request = requests.get(universalis_query.format(
+                    worldDcRegion=self.datacenter, itemIds=itemid, listings=listing_count))
+                prices = price_request.json()
+            except:
+                print('Error when requesting Universalis API, try later and check API status, shopper disconnecting')
+                exit()
 
-        for itemid in prices["unresolvedItems"]:
-            self.items[itemid].not_on_market = True
-            self.not_on_market_exist = True
-        print("optimizing")
-        for itemid in self.items.keys():
-            self.optimize_buys_and_process(prices, itemid)
-        # Testing Item data storage
-        # for item in self.items.values():
-        #     print(item.name, item.world_prices)
+            # print(json.dumps(prices, indent=4))
 
-    def optimize_buys_and_process(self, prices, itemid):
-        # Currently it just grab the top [quantity] listing
-        # will create a search that minize gil spent to buy at least [quantity] items later
-        if not self.items[itemid].not_on_market:
-            for listing in prices["items"][str(itemid)]["listings"][:self.items[itemid].quantity]:
-                self.items[itemid].add_listing(listing["worldName"], listing["pricePerUnit"], listing["quantity"])
-
+            if prices["itemID"] != itemid:
+                self.items[itemid].not_on_market = True
+                self.not_on_market_exist = True
+                continue
+            else:
+                sack_size = int(np.ceil(self.items[itemid].quantity*1.5)) #I know this is ugly, but since we already use argmin from numpy for search speedup, why not also use it for ceiling
+                sack = [float('inf')] * sack_size
+                sack[0] = 0
+                sack_listings = [[]] * sack_size
+                for listing in prices["listings"]:
+                    for i in range(sack_size-1, -1, -1):
+                        if i - listing["quantity"] < 0:\
+                            continue
+                        new_sack = sack[i-listing["quantity"]] + listing["pricePerUnit"]*listing["quantity"]
+                        if new_sack < sack[i]:
+                            sack[i] = new_sack
+                            sack_listings[i] = sack_listings[i-listing["quantity"]]+[(listing["worldName"], listing["pricePerUnit"], listing["quantity"])]
+                index_min = np.argmin(sack[self.items[itemid].quantity:])+self.items[itemid].quantity
+                # index may not be true min, check if corresponding value is finite, if its not return the right
+                if np.isposinf(sack[index_min]):
+                    for i in range(sack_size-1, -1, -1):
+                        if not np.isposinf(sack[i]):
+                            index_min = i
+                            break
+                self.items[itemid].alteration = sack[index_min] - self.items[itemid].quantity
+                for listing in sack_listings[index_min]:
+                    self.items[itemid].add_listing(listing[0], listing[1], listing[2]) #listing["worldName"], listing["pricePerUnit"], listing["quantity"]
+        # print(sack, sack_listings, index_min)
+        # print(self.items[22569].world_prices)
+        # exit()
 
 
 
@@ -83,8 +103,24 @@ class Shopper:
 
 
 
+# Function that handles printing to
 
+    def progressbar(self, it, prefix="", size=40): # Python3.6+
+        count = len(it)
+        start = time.time()
+        def show(j):
+            x = int(size*j/count)
+            remaining = ((time.time() - start) / j) * (count - j)
 
+            mins, sec = divmod(remaining, 60)
+            time_str = f"{int(mins):02}:{int(sec):02}"
+
+            print(f"{prefix}[{u'█'*x}{('.'*(size-x))}] {j}/{count} Est wait {time_str}", end='\r', flush=True)
+
+        for i, item in enumerate(it):
+            yield item
+            show(i+1)
+        print("\n", flush=True)
 
     def print_header(self):
         now = datetime.now()
