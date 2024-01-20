@@ -115,12 +115,12 @@ class Shopper:
             mins, sec = divmod(remaining, 60)
             time_str = f"{int(mins):02}:{int(sec):02}"
 
-            print(f"{prefix}[{u'█'*x}{('.'*(size-x))}] {j}/{count} Est wait {time_str}", end='\r', flush=True)
+            print(f"  {prefix}[{u'█'*x}{('.'*(size-x))}] {j}/{count} Est wait {time_str}", end='\r', flush=True)
 
         for i, item in enumerate(it):
             yield item
             show(i+1)
-        print("\n", flush=True)
+        print("", flush=True)
 
     def print_header(self):
         now = datetime.now()

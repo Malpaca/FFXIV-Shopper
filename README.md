@@ -39,30 +39,40 @@ Which will print out [this example output](#example-output)
 
 ## Example Output
 ```
-Shopping list was created on 16/01/2024 05:47:56
+>>> main.py -f ShopperTest.json -dc Primal -v
+File and Datacenter Valid, creating shopping list
+Total 5 items received from JSON file
+Fetching item sells data and optimizing
+    [████████████████████████████████████████] 5/5 Est wait 00:00
+Formating fetched listing data into worlds
+
+Shopping list was created on 20/01/2024 10:55:04
 ------------------------
-In Hyperion, 21,800 gil total
-└─    1x Alpine Pillar,                   avg price:21800
-       └─    1 listed,  price per unit:21,800
+In Excalibur, 17,999 gil total
+└─    1x Alpine Pillar,                   avg price:17999
+       └─    1 listed,  price per unit:17,999
 ------------------------
-In Ultros, 87,150 gil total
-└─    1x Carbuncle Chronometer,           avg price:150
-       └─    1 listed,  price per unit:150
-└─    3x Corner Counter,                  avg price:29000
-       └─    1 listed,  price per unit:29,000
-       └─    1 listed,  price per unit:29,000
-       └─    1 listed,  price per unit:29,000
+In Ultros, 26,098 gil total
+└─    1x Carbuncle Chronometer,           avg price:98
+       └─    1 listed,  price per unit:98
+└─    1x Corner Counter,                  avg price:26000
+       └─    1 listed,  price per unit:26,000
 ------------------------
-In Leviathan, 60,717 gil total
-└─    1x Cooking Stove,                   avg price:60717
+In Leviathan, 121,434 gil total
+└─    2x Cooking Stove,                   avg price:60717
+       └─    1 listed,  price per unit:60,717
        └─    1 listed,  price per unit:60,717
 ------------------------
-In Famfrit, 83,495 gil total
-└─    1x Cooking Stove,                   avg price:83495
-       └─    1 listed,  price per unit:83,495
+In Lamia, 76,999 gil total
+└─    2x Corner Counter,                  avg price:38499
+       └─    1 listed,  price per unit:38,000
+       └─    1 listed,  price per unit:38,999
 ------------------------
-Total Cost: 253,162 gil
-Items found on Hyperion, Ultros, Leviathan, Famfrit
+Total Cost: 242,530 gil
+Items found on Excalibur, Ultros, Leviathan, Lamia
+
+The following item cannot be found on Primal marketboard
+      1x Stuffed Fox
 
 Shopper disconnected, thank you for shopping!
 ```

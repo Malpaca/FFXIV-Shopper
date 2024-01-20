@@ -166,6 +166,19 @@
 			"properties":
 			{
 			}
+		},
+		{
+			"itemId": 17980,
+			"name": "Stuffed Fox",
+			"transform":
+			{
+				"location": [ -291.1666972187345, 302.98267763540605, 2.9869323596198001 ],
+				"rotation": [ 0, 0, 0, 1 ],
+				"scale": [ 1, 1, 1 ]
+			},
+			"properties":
+			{
+			}
 		}
 	],
 	"properties":
