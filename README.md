@@ -2,7 +2,7 @@
 FFXIV-Shopper takes in a Makeplace JSON file, and generate a market shopping list of the interior furniture that's seperated into different worlds on your provided datacenter, so you can minimize your shopping time by buying all the item you need from the same world at once.
 If certain item can be stacked (I don't think furniture can do that, but I have included the feature for the program to eventually extend into a generic shopping list, not just Makeplace JSON), it will look through the top few marketboard listing and find the cheapest combination of them that satisfy your desired item quantity.
 The output is neatly organized into different worlds, with total gil per world, average gil per item for each item in that world, and total gil of the full shopping list.
-It can also be run with a verbose argument that prints out the selected listings for an item for more information but will make the shopping list very cluttered, refer to [this section](##running-the-program) for detail.
+It can also be run with a verbose argument that prints out the selected listings for an item for more information but will make the shopping list very cluttered, refer to [this section](#running-the-program) for detail.
 
 ## Requirement
 This program uses ```argparse``` and ```numpy``` for argument parsing and minor math speed up (very minor, but I'm lazy to write a non numpy version)
