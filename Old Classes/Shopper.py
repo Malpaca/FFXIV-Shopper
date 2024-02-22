@@ -1,68 +1,23 @@
+import time
 import requests
 import json
-import time
 import numpy as np
-from Item import Item
-from World import World
-from datetime import datetime
 
 class Shopper:
-    def __init__(self, data, datacenter, verbose):
+    def __init__(self, datacenter, coverage, verbose):
         self.items = {}
         self.worlds = {}
         self.datacenter = datacenter
+        self.coverage = coverage
         self.verbose = verbose
         self.alteration_exist = False
         self.not_on_market_exist = False
-        self.parse_shoppinglist(data)
 
-    def parse_shoppinglist(self, data):
-        # might want to change this to be out of the shopper class and shopper instead take a list of item/count
-        count = 0
-        print("Reading JSON file")
-
-        for furniture in data["interiorFurniture"]:
-            count+=1
-            if furniture["itemId"] not in self.items:
-                self.items[furniture["itemId"]] = Item(furniture["name"])
-            self.items[furniture["itemId"]].quantity += 1
-        if count != 0:
-            print(f"Received {count} items from interior furniture section")
-            count = 0
-
-        for furniture in data["exteriorFurniture"]:
-            count+=1
-            if furniture["itemId"] not in self.items:
-                self.items[furniture["itemId"]] = Item(furniture["name"])
-            self.items[furniture["itemId"]].quantity += 1
-        if count != 0:
-            print(f"Received {count} items from interior furniture section")
-            count = 0
-
-            for furniture in data["interiorFixture"]:
-                count+=1
-                if furniture["itemId"] not in self.items:
-                    self.items[furniture["itemId"]] = Item(furniture["name"])
-                self.items[furniture["itemId"]].quantity += 1
-            if count != 0:
-                print(f"Received {count} items from interior furniture section")
-                count = 0
-
-        for furniture in data["exteriorFixture"]:
-            count+=1
-            if furniture["itemId"] not in self.items:
-                self.items[furniture["itemId"]] = Item(furniture["name"])
-            self.items[furniture["itemId"]].quantity += 1
-        if count != 0:
-            print(f"Received {count} items from interior furniture section")
-            count = 0
-
-        print(f"Total {len(self.items)} items received from JSON file")
-
-    def make_shopping_list(self):
+    def create_shopping_list(self):
         self.fetch_and_optimize()
         self.formate_worlds()
 
+    def print_shopping_list(self):
         self.print_header()
         self.print_world_shopping_list()
         self.print_footer()
@@ -75,7 +30,7 @@ class Shopper:
     def fetch_and_optimize(self):
         # Assume total itemlist is smaller than 100
         # will add a check that breaks up itemIds if its larger than 100 unique items
-        print("Fetching item sells data and optimizing")
+        print(f"Fetching item sells data and optimizing for \"{self.coverage}\"")
         for itemid in self.progressbar(self.items.keys()):
             listing_count = min(self.items[itemid].quantity+10, 100)
             try:
@@ -85,6 +40,10 @@ class Shopper:
                 prices = price_request.json()
             except:
                 print('Error when requesting Universalis API, try later and check API status, shopper disconnecting')
+                universalis_query = 'https://universalis.app/api/v2/{worldDcRegion}/{itemIds}?listings={listings}&entries=0'
+                price_request = requests.get(universalis_query.format(
+                    worldDcRegion=self.datacenter, itemIds=itemid, listings=listing_count))
+                prices = price_request.json()
                 exit()
 
             # print(json.dumps(prices, indent=4))
@@ -124,7 +83,7 @@ class Shopper:
 
 
     def formate_worlds(self):
-        print("Formating fetched listing data into worlds")
+        print(f"Formating fetched listing data into worlds for \"{self.coverage}\"")
         for item in self.items.values():
             for world, listings in item.world_prices.items():
                 if world not in self.worlds:
@@ -160,7 +119,7 @@ class Shopper:
     def print_header(self):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        print(f"\nShopping list was created on {dt_string}")
+        print(f"\nShopping list for \"{self.coverage}\"was created on {dt_string}")
 
     def print_world_shopping_list(self):
         for world in self.worlds.values():
