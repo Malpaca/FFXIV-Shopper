@@ -18,10 +18,45 @@ class Shopper:
 
     def parse_shoppinglist(self, data):
         # might want to change this to be out of the shopper class and shopper instead take a list of item/count
+        count = 0
+        print("Reading JSON file")
+
         for furniture in data["interiorFurniture"]:
+            count+=1
             if furniture["itemId"] not in self.items:
                 self.items[furniture["itemId"]] = Item(furniture["name"])
             self.items[furniture["itemId"]].quantity += 1
+        if count != 0:
+            print(f"Received {count} items from interior furniture section")
+            count = 0
+
+        for furniture in data["exteriorFurniture"]:
+            count+=1
+            if furniture["itemId"] not in self.items:
+                self.items[furniture["itemId"]] = Item(furniture["name"])
+            self.items[furniture["itemId"]].quantity += 1
+        if count != 0:
+            print(f"Received {count} items from interior furniture section")
+            count = 0
+
+            for furniture in data["interiorFixture"]:
+                count+=1
+                if furniture["itemId"] not in self.items:
+                    self.items[furniture["itemId"]] = Item(furniture["name"])
+                self.items[furniture["itemId"]].quantity += 1
+            if count != 0:
+                print(f"Received {count} items from interior furniture section")
+                count = 0
+
+        for furniture in data["exteriorFixture"]:
+            count+=1
+            if furniture["itemId"] not in self.items:
+                self.items[furniture["itemId"]] = Item(furniture["name"])
+            self.items[furniture["itemId"]].quantity += 1
+        if count != 0:
+            print(f"Received {count} items from interior furniture section")
+            count = 0
+
         print(f"Total {len(self.items)} items received from JSON file")
 
     def make_shopping_list(self):
