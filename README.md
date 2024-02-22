@@ -1,7 +1,8 @@
 # FFXIV-Shopper
-FFXIV-Shopper takes in a Makeplace JSON file, and generate a market shopping list of the interior furniture that's seperated into different worlds on your provided datacenter, so you can minimize your shopping time by buying all the item you need from the same world at once.
+FFXIV-Shopper takes in a Makeplace JSON file, and generate a market shopping list that's seperated into different worlds on your provided datacenter, so you can minimize your money shopping time by buying all the item you need from the same world at once with (hopefully) the lowest cost.
 If certain item can be stacked (I don't think furniture can do that, but I have included the feature for the program to eventually extend into a generic shopping list, not just Makeplace JSON), it will look through the top few marketboard listing and find the cheapest combination of them that satisfy your desired item quantity.
 The output is neatly organized into different worlds, with total gil per world, average gil per item for each item in that world, and total gil of the full shopping list.
+The output can also be seperated into 4 different list that distinguish interior/exterior furniture/fixture. Eventually also distinguish between different input shopping list.
 It can also be run with a verbose argument that prints out the selected listings for an item for more information but will make the shopping list very cluttered, refer to [this section](#running-the-program) for detail.
 
 ## Requirement
@@ -20,7 +21,7 @@ Depending on your python alias on your system
 The program can only be run in commandline, maybe I'll make a GUI version in the future, but so far only commandline
 
 ```
-usage: main.py [-h] --file FILE --datacenter DATACENTER [--verbose]
+usage: main.py [-h] --file FILE --datacenter DATACENTER [--seperate] [--verbose]
 
 Generate a 'optimized' shopping list given makeplace JSON itemlist
 
@@ -29,7 +30,8 @@ options:
   --file FILE, -f FILE  Path to json
   --datacenter DATACENTER, -dc DATACENTER
                         Shopper datacenter name
-  --verbose, -v         Verbose, display specific listing for each item instead of just average
+  --seperate            Create different shopping list for each section of the JSON file: interior/exterior fixture/furnitures
+  --verbose             Verbose, display specific listing for each item instead of just average
 ```
 To have a taste with the example json file, run
 ```
@@ -79,7 +81,7 @@ Shopper disconnected, thank you for shopping!
 
 ## TODO
 - [x] Implement listing optimizations
-- [ ] Shopping list for exterior furniture
-- [ ] Shopping list for fixtures
+- [x] Shopping list for exterior furniture
+- [x] Shopping list for fixtures
 - [ ] Shopping list for dyes
 - [ ] Shopping list for generic item list (non Makeplace JSON input)
