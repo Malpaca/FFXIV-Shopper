@@ -123,7 +123,7 @@ class Shopper:
 
     def formate_worlds(self):
         print(f"Formating fetched listing data into worlds for \"{self.coverage}\"")
-        for item in self.items.values():
+        for item in self.progressbar(self.items.values()):
             for world, listings in item.world_prices.items():
                 if world not in self.worlds:
                     self.worlds[world] = World(world)
@@ -158,7 +158,7 @@ class Shopper:
     def print_header(self):
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        print(f"\nShopping list for \"{self.coverage}\"was created on {dt_string}")
+        print(f"\n\n\nShopping list for \"{self.coverage}\" created on {dt_string}")
 
     def print_world_shopping_list(self):
         for world in self.worlds.values():
