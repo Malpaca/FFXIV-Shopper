@@ -21,59 +21,88 @@ Depending on your python alias on your system
 The program can only be run in commandline, maybe I'll make a GUI version in the future, but so far only commandline
 
 ```
-usage: main.py [-h] --file FILE --datacenter DATACENTER [--seperate] [--verbose]
+usage: main.py [-h] --file FILE [FILE ...] --datacenter DATACENTER [--output OUTPUT] [--seperate] [--verbose]
 
 Generate a 'optimized' shopping list given makeplace JSON itemlist
 
 options:
   -h, --help            show this help message and exit
-  --file FILE, -f FILE  Path to json
+  --file FILE [FILE ...], -f FILE [FILE ...]
+                        Path to json
   --datacenter DATACENTER, -dc DATACENTER
                         Shopper datacenter name
-  --seperate            Create different shopping list for each section of the JSON file: interior/exterior fixture/furnitures
+  --output OUTPUT, -o OUTPUT
+                        Name of output file, also remove the output in command line
+  --seperate            Create different shopping list for each section of the JSON file: interior/exterior
+                        fixture/furnitures
   --verbose             Verbose, display specific listing for each item instead of just average
 ```
 To have a taste with the example json file, run
 ```
-python main.py -f ShopperTest.json -dc primal -v
+python main.py -f ShopperTest.json -dc primal --verbose
 ```
 Which will print out [this example output](#example-output)
 
 ## Example Output
 ```
->>> main.py -f ShopperTest.json -dc Primal -v
+>>> python main.py -f ShopperTest.json -dc primal --verbose
 File and Datacenter Valid, creating shopping list
-Total 5 items received from JSON file
-Fetching item sells data and optimizing
-    [████████████████████████████████████████] 5/5 Est wait 00:00
-Formating fetched listing data into worlds
+Reading JSON file
+Received 5 items from interiorFurniture section
+Received 4 items from interiorFixture section
+Received 2 items from exteriorFixture section
+Total 11 unique items received from JSON file
 
-Shopping list was created on 20/01/2024 10:55:04
+Fetching item sells data and optimizing for "ShopperTest:All"
+  [████████████████████████████████████████] 11/11 Est wait 00:00
+Reorganizing fetched listing data by worlds for "ShopperTest:All"
+  [████████████████████████████████████████] 11/11 Est wait 00:00
+
+
+
+Shopping list for "ShopperTest:All" created on 29/05/2024 16:58:39
 ------------------------
-In Excalibur, 17,999 gil total
-└─    1x Alpine Pillar,                   avg price:17999
-       └─    1 listed,  price per unit:17,999
+In Ultros, 18,998 gil total
+└─    1x Alpine Pillar,                   avg price:13999
+       └─    1 listed,  price per unit:13,999
+└─    1x Glade Flooring,                  avg price:4999
+       └─    1 listed,  price per unit:4,999
 ------------------------
-In Ultros, 26,098 gil total
-└─    1x Carbuncle Chronometer,           avg price:98
-       └─    1 listed,  price per unit:98
-└─    1x Corner Counter,                  avg price:26000
-       └─    1 listed,  price per unit:26,000
+In Lamia, 900 gil total
+└─    1x Carbuncle Chronometer,           avg price:900
+       └─    1 listed,  price per unit:900
 ------------------------
-In Leviathan, 121,434 gil total
+In Leviathan, 179,823 gil total
 └─    2x Cooking Stove,                   avg price:60717
        └─    1 listed,  price per unit:60,717
        └─    1 listed,  price per unit:60,717
+└─    3x Corner Counter,                  avg price:18500
+       └─    1 listed,  price per unit:18,500
+       └─    1 listed,  price per unit:18,500
+       └─    1 listed,  price per unit:18,500
+└─    2x Storm Blue Interior Wall,        avg price:299
+       └─    1 listed,  price per unit:250
+       └─    1 listed,  price per unit:349
+└─    2x Crystal Chandelier,              avg price:1145
+       └─    1 listed,  price per unit:1,140
+       └─    1 listed,  price per unit:1,150
 ------------------------
-In Lamia, 76,999 gil total
-└─    2x Corner Counter,                  avg price:38499
-       └─    1 listed,  price per unit:38,000
-       └─    1 listed,  price per unit:38,999
+In Exodus, 8,999 gil total
+└─    1x Glade Flooring,                  avg price:8999
+       └─    1 listed,  price per unit:8,999
 ------------------------
-Total Cost: 242,530 gil
-Items found on Excalibur, Ultros, Leviathan, Lamia
+In Behemoth, 32 gil total
+└─    1x Riviera Arched Window,           avg price:32
+       └─    1 listed,  price per unit:32
+------------------------
+In Excalibur, 999 gil total
+└─    1x Riviera Wooden Door,             avg price:999
+       └─    1 listed,  price per unit:999
+------------------------
+Total Cost: 209,751 gil
+Items found on Ultros, Lamia, Leviathan, Exodus, Behemoth, Excalibur
 
-The following item cannot be found on Primal marketboard
+The following item cannot be found on primal marketboard
       1x Stuffed Fox
 
 Shopper disconnected, thank you for shopping!
@@ -85,3 +114,5 @@ Shopper disconnected, thank you for shopping!
 - [x] Shopping list for fixtures
 - [ ] Shopping list for dyes
 - [ ] Shopping list for generic item list (non Makeplace JSON input)
+- [ ] GarlandTools API Vendor price lookup (So you don't pay for overprice market item)
+- [ ] GUI

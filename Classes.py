@@ -1,6 +1,7 @@
 import time
 import requests
-import json
+# import json
+import sys
 import numpy as np
 from datetime import datetime
 
@@ -8,7 +9,7 @@ class Item:
     def __init__(self, name):
         self.name = name
         self.quantity = 0
-        self.world_prices = {} #structure: {worldname: {}}
+        self.world_prices = {} #structure: {worldname: {{"price per unit", "quantity"}...}}
         self.alteration = 0
         self.not_on_market = False
 
@@ -43,7 +44,7 @@ class World:
             item["average"] = int(item_total_price/item_total_count)
 
 class Shopper:
-    def __init__(self, datacenter, coverage, verbose):
+    def __init__(self, datacenter, coverage, output, verbose):
         self.items = {}
         self.worlds = {}
         self.datacenter = datacenter
@@ -51,22 +52,18 @@ class Shopper:
         self.verbose = verbose
         self.alteration_exist = False
         self.not_on_market_exist = False
+        self.output = output if output != None else sys.stdout
 
     def create_shopping_list(self):
-        self.fetch_and_optimize()
-        self.formate_worlds()
-
-    def print_shopping_list(self):
-        self.print_header()
-        self.print_world_shopping_list()
-        self.print_footer()
+        self.fetch_and_optimize_listing()
+        self.reorganize_listing()
 
 
 
 
 
 
-    def fetch_and_optimize(self):
+    def fetch_and_optimize_listing(self):
         # Assume total itemlist is smaller than 100
         # will add a check that breaks up itemIds if its larger than 100 unique items
         print(f"Fetching item sells data and optimizing for \"{self.coverage}\"")
@@ -121,8 +118,8 @@ class Shopper:
 
 
 
-    def formate_worlds(self):
-        print(f"Formating fetched listing data into worlds for \"{self.coverage}\"")
+    def reorganize_listing(self):
+        print(f"Reorganizing fetched listing data by worlds for \"{self.coverage}\"")
         for item in self.progressbar(self.items.values()):
             for world, listings in item.world_prices.items():
                 if world not in self.worlds:
@@ -137,7 +134,6 @@ class Shopper:
 
 
 # Function that handles printing to
-
     def progressbar(self, it, prefix="", size=40): # Python3.6+
         count = len(it)
         start = time.time()
@@ -155,40 +151,37 @@ class Shopper:
             show(i+1)
         print("", flush=True)
 
-    def print_header(self):
+    def print_shopping_list(self):
+    # def print_shopping_list(self):
+        #---Header---
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-        print(f"\n\n\nShopping list for \"{self.coverage}\" created on {dt_string}")
+        print(f"\n\n\nShopping list for \"{self.coverage}\" created on {dt_string}", file=self.output)
 
-    def print_world_shopping_list(self):
+        #---World_shopping_list---
         for world in self.worlds.values():
-            print('------------------------')
-            print(f'In {world.name}, {world.world_total_price:,} gil total')
+            print('------------------------', file=self.output)
+            print(f'In {world.name}, {world.world_total_price:,} gil total', file=self.output)
             for item_name, item in world.item_prices.items():
                 name = item_name+','
-                print(f'\u2514\u2500 {item["quantity"]:>4}x {name:<32} avg price:{item["average"]}')
+                print(f'\u2514\u2500 {item["quantity"]:>4}x {name:<32} avg price:{item["average"]}', file=self.output)
                 if self.verbose:
                     for listing in item["listings"]:
-                        print(f'       \u2514\u2500 {listing["quantity"]:>4,} listed,  price per unit:{listing["price per unit"]:,}')
-        print('------------------------')
+                        print(f'       \u2514\u2500 {listing["quantity"]:>4,} listed,  price per unit:{listing["price per unit"]:,}', file=self.output)
+        print('------------------------', file=self.output)
 
-    def print_footer(self):
+        #---Footer---
         total_price = sum([world.world_total_price for world in self.worlds.values()])
-        print(f"Total Cost: {total_price:,} gil")
-        print(f"Items found on {', '.join(x for x in self.worlds.keys())}")
+        print(f"Total Cost: {total_price:,} gil", file=self.output)
+        print(f"Items found on {', '.join(x for x in self.worlds.keys())}", file=self.output)
         if self.alteration_exist:
-            print("\nThe following item differs from item list file")
+            print("\nThe following item differs from item list file", file=self.output)
             for item in self.items.values():
                 if item.alteration:
-                    print(f"   {item.alteration:>4}x {item.name}")
+                    print(f"   {item.alteration:>4}x {item.name}", file=self.output)
         if self.not_on_market_exist:
-            print(f"\nThe following item cannot be found on {self.datacenter} marketboard")
+            print(f"\nThe following item cannot be found on {self.datacenter} marketboard", file=self.output)
             for item in self.items.values():
                 if item.not_on_market:
-                    print(f"   {item.quantity:>4}x {item.name}")
-        # print('')
-        # print(f'Could not find these items on the market. Perhaps they are cash shop or not sellable?')
-        # for item in alteration:
-        #     print(f'{item[2]}x {item[0]}')
-        # print('')
-        print("\nShopper disconnected, thank you for shopping!")
+                    print(f"   {item.quantity:>4}x {item.name}", file=self.output)
+        print("\nShopper disconnected, thank you for shopping!", file=self.output)

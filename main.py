@@ -27,7 +27,7 @@ def arg_check(files, datacenter):
     # Message to indicate valid argument
     print("File and Datacenter Valid, creating shopping list")
 
-def process_and_make_list(files, datacenter, verbose, seperate):
+def process_and_make_list(files, datacenter, output, verbose, seperate):
     # not so useful counter for flair
     count = 0
     tot_count = 0
@@ -48,26 +48,31 @@ def process_and_make_list(files, datacenter, verbose, seperate):
 
 
             for i, coverage in enumerate(coverages):
+                #shopper creation based on user preference (seperated or united)
                 if seperate:
-                    shoppers.append(Shopper(datacenter, shopper_name + ':' + coverage, verbose))
+                    shoppers.append(Shopper(datacenter, shopper_name + ':' + coverage, output, verbose))
                 else:
+                    #only create big shopper at start, ignore creation line after first loop
                     if i==0:
-                        shoppers.append(Shopper(datacenter, shopper_name + ':' + "All", verbose))
+                        shoppers.append(Shopper(datacenter, shopper_name + ':' + "All", output, verbose))
+                #load specific item coverage into the respective shopper
                 for furniture in item_data[coverage]:
                     if furniture["itemId"] not in shoppers[i*seperate].items:
                         count+=1
                         shoppers[i*seperate].items[furniture["itemId"]] = Item(furniture["name"])
                     shoppers[i*seperate].items[furniture["itemId"]].quantity += 1
+                #output message on how many item are added in a specific section
                 if count != 0:
-                    print(f"Received {count} items from interior furniture section")
+                    print(f"Received {count} items from {coverage} section")
                     tot_count += count
-                    count = 0
-        elif file.lower().endswith("csv"):
-            print("CSV file detected, this functionality isn't implimented yet, skipping this file")
-        else:
-            print("Unsupported file format, skipping this file")
+                count = 0
 
-    print(f"Total {tot_count} unique items received from JSON file")
+        elif file.lower().endswith("csv"):
+            print(f"CSV file detected, this functionality isn't implimented yet, skipping file\"{file}\"")
+        else:
+            print(f"Unsupported file format, skipping file \"{file}\"")
+
+    print(f"Total {tot_count} unique items received from JSON file\n")
 
     # optimize list
     for shopper in shoppers:
@@ -81,6 +86,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a 'optimized' shopping list given makeplace JSON itemlist")
     parser.add_argument('--file', '-f', nargs='+', required=True, help='Path to json')
     parser.add_argument('--datacenter', '-dc', required=True, help='Shopper datacenter name')
+    parser.add_argument('--output', '-o',  help='Name of output file, also remove the output in command line')
     parser.add_argument('--seperate', action='store_true', help='Create different shopping list for each section of the JSON file: interior/exterior fixture/furnitures')
     parser.add_argument('--verbose', action='store_true', help='Verbose, display specific listing for each item instead of just average')
     args = parser.parse_args()
@@ -88,6 +94,7 @@ if __name__ == "__main__":
     try:
         files = args.file
         datacenter = args.datacenter
+        output = args.output
         verbose = args.verbose
         seperate = args.seperate
     except ValueError:
@@ -95,4 +102,5 @@ if __name__ == "__main__":
         exit()
 
     arg_check(files, datacenter)
-    process_and_make_list(files, datacenter, verbose, seperate)
+    process_and_make_list(files, datacenter, output, verbose, seperate)
+    #handle output argument
