@@ -21,32 +21,32 @@ Depending on your python alias on your system
 The program can only be run in commandline, maybe I'll make a GUI version in the future, but so far only commandline
 
 ```
-usage: main.py [-h] --file FILE [FILE ...] --datacenter DATACENTER [--output OUTPUT] [--seperate] [--verbose]
+usage: main.py [-h] --File FILE [FILE ...] --DatacenterRegion DATACENTERREGION [--Output OUTPUT] [--Seperate] [--Verbose]
 
 Generate a 'optimized' shopping list given makeplace JSON itemlist
 
 options:
   -h, --help            show this help message and exit
-  --file FILE [FILE ...], -f FILE [FILE ...]
+  --File FILE [FILE ...], -f FILE [FILE ...]
                         Path to json
-  --datacenter DATACENTER, -dc DATACENTER
-                        Shopper datacenter name
-  --output OUTPUT, -o OUTPUT
+  --DatacenterRegion DATACENTERREGION, -dcRegion DATACENTERREGION
+                        Shopper region or datacenter name (use dash in place of space)
+  --Output OUTPUT, -o OUTPUT
                         Name of output file, also remove the output in command line
-  --seperate            Create different shopping list for each section of the JSON file: interior/exterior
+  --Seperate            Create different shopping list for each section of the JSON file: interior/exterior
                         fixture/furnitures
-  --verbose             Verbose, display specific listing for each item instead of just average
+  --Verbose             Verbose, display specific listing for each item instead of just average
 ```
 To have a taste with the example json file, run
 ```
-python main.py -f ShopperTest.json -dc primal --verbose
+python main.py -f ShopperTest.json -dcRegion north-america --Verbose
 ```
 Which will print out [this example output](#example-output)
 
 ## Example Output
 ```
->>> python main.py -f ShopperTest.json -dc primal --verbose
-File and Datacenter Valid, creating shopping list
+>>> python main.py -f ShopperTest.json -dcRegion north-america --Verbose
+File and location Valid, creating shopping list
 Reading JSON file
 Received 5 items from interiorFurniture section
 Received 4 items from interiorFixture section
@@ -60,49 +60,53 @@ Reorganizing fetched listing data by worlds for "ShopperTest:All"
 
 
 
-Shopping list for "ShopperTest:All" created on 29/05/2024 16:58:39
+Shopping list for "ShopperTest:All" created on 30/05/2024 13:31:50
 ------------------------
-In Ultros, 18,998 gil total
-└─    1x Alpine Pillar,                   avg price:13999
-       └─    1 listed,  price per unit:13,999
-└─    1x Glade Flooring,                  avg price:4999
-       └─    1 listed,  price per unit:4,999
+In Maduin Dynamis North-America, 13,000 gil total
+└─    1x Alpine Pillar,                   avg price:13000
+       └─    1 listed,  price per unit:13,000
 ------------------------
-In Lamia, 900 gil total
-└─    1x Carbuncle Chronometer,           avg price:900
-       └─    1 listed,  price per unit:900
+In Seraph Dynamis North-America, 150 gil total
+└─    1x Carbuncle Chronometer,           avg price:150
+       └─    1 listed,  price per unit:150
 ------------------------
-In Leviathan, 179,823 gil total
+In Leviathan Primal North-America, 177,741 gil total
 └─    2x Cooking Stove,                   avg price:60717
        └─    1 listed,  price per unit:60,717
        └─    1 listed,  price per unit:60,717
-└─    3x Corner Counter,                  avg price:18500
-       └─    1 listed,  price per unit:18,500
-       └─    1 listed,  price per unit:18,500
-       └─    1 listed,  price per unit:18,500
-└─    2x Storm Blue Interior Wall,        avg price:299
-       └─    1 listed,  price per unit:250
+└─    3x Corner Counter,                  avg price:18513
+       └─    1 listed,  price per unit:18,513
+       └─    1 listed,  price per unit:18,513
+       └─    1 listed,  price per unit:18,513
+└─    2x Storm Blue Interior Wall,        avg price:384
        └─    1 listed,  price per unit:349
-└─    2x Crystal Chandelier,              avg price:1145
-       └─    1 listed,  price per unit:1,140
-       └─    1 listed,  price per unit:1,150
+       └─    1 listed,  price per unit:419
 ------------------------
-In Exodus, 8,999 gil total
-└─    1x Glade Flooring,                  avg price:8999
+In Exodus Primal North-America, 17,997 gil total
+└─    2x Glade Flooring,                  avg price:8998
+       └─    1 listed,  price per unit:8,998
        └─    1 listed,  price per unit:8,999
 ------------------------
-In Behemoth, 32 gil total
+In Coeurl Crystal North-America, 500 gil total
+└─    1x Crystal Chandelier,              avg price:500
+       └─    1 listed,  price per unit:500
+------------------------
+In Halicarnassus Dynamis North-America, 740 gil total
+└─    1x Crystal Chandelier,              avg price:740
+       └─    1 listed,  price per unit:740
+------------------------
+In Behemoth Primal North-America, 32 gil total
 └─    1x Riviera Arched Window,           avg price:32
        └─    1 listed,  price per unit:32
 ------------------------
-In Excalibur, 999 gil total
+In Excalibur Primal North-America, 999 gil total
 └─    1x Riviera Wooden Door,             avg price:999
        └─    1 listed,  price per unit:999
 ------------------------
-Total Cost: 209,751 gil
-Items found on Ultros, Lamia, Leviathan, Exodus, Behemoth, Excalibur
+Total Cost: 211,159 gil
+Items found on Maduin, Seraph, Leviathan, Exodus, Coeurl, Halicarnassus, Behemoth, Excalibur
 
-The following item cannot be found on primal marketboard
+The following item cannot be found on north-america marketboard
       1x Stuffed Fox
 
 Shopper disconnected, thank you for shopping!
@@ -110,8 +114,7 @@ Shopper disconnected, thank you for shopping!
 
 ## TODO
 - [x] Implement listing optimizations
-- [x] Shopping list for exterior furniture
-- [x] Shopping list for fixtures
+- [x] Shopping list for all housing criteria (interior/exterior furniture/fixture)
 - [ ] Shopping list for dyes
 - [ ] Shopping list for generic item list (non Makeplace JSON input)
 - [ ] GarlandTools API Vendor price lookup (So you don't pay for overprice market item)

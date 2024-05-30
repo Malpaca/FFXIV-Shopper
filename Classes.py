@@ -1,6 +1,6 @@
 import time
 import requests
-# import json
+import json
 import sys
 import numpy as np
 from datetime import datetime
@@ -22,6 +22,7 @@ class Item:
 class World:
     def __init__(self, name):
         self.name = name
+        self.dcRegion = ''
         self.item_prices = {}
         self.world_total_price = 0
 
@@ -127,6 +128,25 @@ class Shopper:
                 self.worlds[world].add_listing(item.name, listings)
         for world in self.worlds.values():
             world.calculate_prices()
+        # Find DCRegion name for each world
+        try:
+            universalis_query = 'https://universalis.app/api/v2/data-centers'
+            dc_request = requests.get(universalis_query, timeout=1)
+            universalis_query = 'https://universalis.app/api/v2/worlds'
+            world_request = requests.get(universalis_query, timeout=1)
+        except:
+            print('Error when requesting Universalis API, try later and check API status')
+            exit()
+        for world in self.worlds.values():
+            dc_entries = dc_request.json()
+            world_entries = world_request.json()
+            world_id = None
+            for world_entry in world_entries:
+                if world.name == world_entry['name']:
+                    world_id = world_entry['id']
+            for dc_entry in dc_entries:
+                if world_id in dc_entry['worlds']:
+                    world.dcRegion = dc_entry['name'] + ' ' + dc_entry['region']
         # Testing World data storage
         # for world in self.worlds.values():
         #     print(world.name, world.item_prices)
@@ -161,7 +181,7 @@ class Shopper:
         #---World_shopping_list---
         for world in self.worlds.values():
             print('------------------------', file=self.output)
-            print(f'In {world.name}, {world.world_total_price:,} gil total', file=self.output)
+            print(f'In {world.name} {world.dcRegion}, {world.world_total_price:,} gil total', file=self.output)
             for item_name, item in world.item_prices.items():
                 name = item_name+','
                 print(f'\u2514\u2500 {item["quantity"]:>4}x {name:<32} avg price:{item["average"]}', file=self.output)

@@ -5,7 +5,7 @@ import requests
 
 from Classes import Item, World, Shopper
 
-def arg_check(files, datacenter):
+def arg_check(files, dcRegion):
     #----------
     # File path name check
     for file in files:
@@ -13,21 +13,20 @@ def arg_check(files, datacenter):
             print("Provided file path not found")
             exit()
     # Datacenter name check
-    dc_request = requests.get('https://universalis.app/api/v2/data-centers')
     try:
         universalis_query = 'https://universalis.app/api/v2/data-centers'
         dc_request = requests.get(universalis_query, timeout=1)
     except:
         print('Error when requesting Universalis API, try later and check API status')
         exit()
-    available_dcs = [x['name'].lower() for x in dc_request.json()]
-    if datacenter.lower() not in available_dcs:
-        print("Provided datacenter does not exist")
+    available_dcs = [x['name'].lower() for x in dc_request.json()] + [x['region'].lower() for x in dc_request.json()]
+    if dcRegion.lower() not in available_dcs:
+        print("Provided datacenter or region does not exist")
         exit()
     # Message to indicate valid argument
-    print("File and Datacenter Valid, creating shopping list")
+    print("File and location Valid, creating shopping list")
 
-def process_and_make_list(files, datacenter, output, verbose, seperate):
+def process_and_make_list(files, dcRegion, output, seperate, verbose):
     # not so useful counter for flair
     count = 0
     tot_count = 0
@@ -50,11 +49,11 @@ def process_and_make_list(files, datacenter, output, verbose, seperate):
             for i, coverage in enumerate(coverages):
                 #shopper creation based on user preference (seperated or united)
                 if seperate:
-                    shoppers.append(Shopper(datacenter, shopper_name + ':' + coverage, output, verbose))
+                    shoppers.append(Shopper(dcRegion, shopper_name + ':' + coverage, output, verbose))
                 else:
                     #only create big shopper at start, ignore creation line after first loop
                     if i==0:
-                        shoppers.append(Shopper(datacenter, shopper_name + ':' + "All", output, verbose))
+                        shoppers.append(Shopper(dcRegion, shopper_name + ':' + "All", output, verbose))
                 #load specific item coverage into the respective shopper
                 for furniture in item_data[coverage]:
                     if furniture["itemId"] not in shoppers[i*seperate].items:
@@ -84,23 +83,23 @@ def process_and_make_list(files, datacenter, output, verbose, seperate):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a 'optimized' shopping list given makeplace JSON itemlist")
-    parser.add_argument('--file', '-f', nargs='+', required=True, help='Path to json')
-    parser.add_argument('--datacenter', '-dc', required=True, help='Shopper datacenter name')
-    parser.add_argument('--output', '-o',  help='Name of output file, also remove the output in command line')
-    parser.add_argument('--seperate', action='store_true', help='Create different shopping list for each section of the JSON file: interior/exterior fixture/furnitures')
-    parser.add_argument('--verbose', action='store_true', help='Verbose, display specific listing for each item instead of just average')
+    parser.add_argument('--File', '-f', nargs='+', required=True, help='Path to json')
+    parser.add_argument('--DatacenterRegion', '-dcRegion', required=True, help='Shopper region or datacenter name (use dash in place of space)')
+    parser.add_argument('--Output', '-o',  help='Name of output file, also remove the output in command line')
+    parser.add_argument('--Seperate', action='store_true', help='Create different shopping list for each section of the JSON file: interior/exterior fixture/furnitures')
+    parser.add_argument('--Verbose', action='store_true', help='Verbose, display specific listing for each item instead of just average')
     args = parser.parse_args()
 
     try:
-        files = args.file
-        datacenter = args.datacenter
-        output = args.output
-        verbose = args.verbose
-        seperate = args.seperate
+        files = args.File
+        dcRegion = args.DatacenterRegion
+        output = args.Output
+        seperate = args.Seperate
+        verbose = args.Verbose
     except ValueError:
         print("args parser error, this should never happen, if it does, congrat! open an issue on the github page please")
         exit()
 
-    arg_check(files, datacenter)
-    process_and_make_list(files, datacenter, output, verbose, seperate)
+    arg_check(files, dcRegion)
+    process_and_make_list(files, dcRegion, output, seperate, verbose)
     #handle output argument
