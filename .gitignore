@@ -8,3 +8,4 @@ Attempt.json
 # Ignore Old files and Test files Folders
 /Old_Classes
 /GarlandTools_Request_Test
+/cache
