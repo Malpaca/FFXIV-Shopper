@@ -1,9 +1,9 @@
 import argparse
 import os
 import json
-import requests
 
-from Classes import Item, World, Shopper
+# from Classes import Item, World, Shopper
+from Module.Shopper import Shopper
 
 def arg_check(files, dcRegion):
     #----------
@@ -12,19 +12,7 @@ def arg_check(files, dcRegion):
         if not os.path.isfile(file):
             print("Provided file path not found")
             exit()
-    # Datacenter name check
-    try:
-        universalis_query = 'https://universalis.app/api/v2/data-centers'
-        dc_request = requests.get(universalis_query, timeout=1)
-    except:
-        print('Error when requesting Universalis API, try later and check API status')
-        exit()
-    available_dcs = [x['name'].lower() for x in dc_request.json()] + [x['region'].lower() for x in dc_request.json()]
-    if dcRegion.lower() not in available_dcs:
-        print("Provided datacenter or region does not exist")
-        exit()
-    # Message to indicate valid argument
-    print("File and location Valid, creating shopping list")
+    print("File location Valid, creating shopping list")
 
 def process_and_make_list(files, dcRegion, output, seperate, verbose):
     # not so useful counter for flair
@@ -32,7 +20,6 @@ def process_and_make_list(files, dcRegion, output, seperate, verbose):
     tot_count = 0
 
     # some variable and name definition
-    num_shopper = 4 + len(files) - 1
     coverages = ["interiorFurniture", "exteriorFurniture", "interiorFixture", "exteriorFixture"]
 
     shoppers = []
@@ -56,10 +43,8 @@ def process_and_make_list(files, dcRegion, output, seperate, verbose):
                         shoppers.append(Shopper(dcRegion, shopper_name + ':' + "All", output, verbose))
                 #load specific item coverage into the respective shopper
                 for furniture in item_data[coverage]:
-                    if furniture["itemId"] not in shoppers[i*seperate].items:
-                        count+=1
-                        shoppers[i*seperate].items[furniture["itemId"]] = Item(furniture["name"])
-                    shoppers[i*seperate].items[furniture["itemId"]].quantity += 1
+                    new_item = shoppers[i*seperate].add_item(furniture["itemId"], furniture["name"])
+                    count += new_item
                 #output message on how many item are added in a specific section
                 if count != 0:
                     print(f"Received {count} items from {coverage} section")
