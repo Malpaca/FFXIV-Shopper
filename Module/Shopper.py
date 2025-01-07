@@ -77,7 +77,7 @@ class Shopper:
         self.verbose = verbose
         self.alteration_exist = False
         self.not_on_market_exist = False
-        self.output = output if output != None else sys.stdout
+        self.output = open(output, "w") if output != None else sys.stdout
         
 
 
@@ -257,3 +257,4 @@ class Shopper:
                 if item["not_on_market"]:
                     print(f"   {item["quantity"]:>4}x {item["name"]}", file=self.output)
         print("\nShopper disconnected, thank you for shopping!", file=self.output)
+        self.output.close()
