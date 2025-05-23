@@ -18,6 +18,8 @@ class Universalis():
         result = requests.get(full_query, params = ep_params)
         if 299 >= result.status_code >= 200:
             return result.json()
+        elif result.status_code == 404:
+            pass
         else:
             raise Exception(f'Error when requesting Universalis API:\n\
                             ({result.url}): [{result.status_code}] {result.reason}\n\
@@ -27,6 +29,8 @@ class Universalis():
         result = self.session.get(full_query, params = ep_params)
         if 299 >= result.status_code >= 200:
             return result.json()
+         elif result.status_code == 404:
+            pass
         else:
             raise Exception(f'Error when requesting Universalis API:\n\
                             ({result.url}): [{result.status_code}] {result.reason}\n\

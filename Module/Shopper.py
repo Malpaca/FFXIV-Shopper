@@ -77,7 +77,7 @@ class Shopper:
         self.verbose = verbose
         self.alteration_exist = False
         self.not_on_market_exist = False
-        self.output = output if output != None else sys.stdout
+        self.output = open(output, "w") if output != None else sys.stdout
         
 
 
@@ -116,7 +116,7 @@ class Shopper:
         for item_ID in self.progressbar(self.items.keys()):
             listing_count = min(self.items[item_ID]["quantity"], 100)
             prices = self.universalis_api.market_board(self.datacenter, item_ID, {'listings':listing_count , 'entries':0})
-            if prices["itemID"] != item_ID:
+            if prices == None:
                 self.items[item_ID]["not_on_market"] = True
                 self.not_on_market_exist = True
                 continue
@@ -245,15 +245,16 @@ class Shopper:
         #---Footer---
         total_price = sum([world["world_total_price"] for world in self.worlds.values()]) + sum([sum([item["quantity"] * item["price_per_unit"] for item in npc["item_prices"].values()])for npc in self.npcs.values()])
         print(f"Total Cost: {total_price:,} gil", file=self.output)
-        print(f"Items found on {', '.join(world["name"] for world in self.worlds.values())}", file=self.output)
+        print(f"Items found on {', '.join(world['name'] for world in self.worlds.values())}", file=self.output)
         if self.alteration_exist:
             print("\nThe following item differs from the desired quantities", file=self.output)
             for item in self.items.values():
-                if item["alteration"]:
-                    print(f"   {item["alteration"]:>4}x {item["name"]}", file=self.output)
+                if item['alteration']:
+                    print(f"   {item['alteration']:>4}x {item['name']}", file=self.output)
         if self.not_on_market_exist:
             print(f"\nThe following item cannot be found on {self.datacenter} marketboard", file=self.output)
             for item in self.items.values():
                 if item["not_on_market"]:
-                    print(f"   {item["quantity"]:>4}x {item["name"]}", file=self.output)
+                    print(f"   {item['quantity']:>4}x {item['name']}", file=self.output)
         print("\nShopper disconnected, thank you for shopping!", file=self.output)
+        self.output.close()
