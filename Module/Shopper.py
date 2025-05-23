@@ -77,7 +77,7 @@ class Shopper:
         self.verbose = verbose
         self.alteration_exist = False
         self.not_on_market_exist = False
-        self.output = open(output, "w") if output != None else sys.stdout
+        self.output = open(output, "w", encoding="utf-8") if output != None else sys.stdout
         
 
 
